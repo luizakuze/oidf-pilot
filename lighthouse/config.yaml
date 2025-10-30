@@ -3,12 +3,12 @@ server:
 
 signing:
   alg: ES256
-  key_dir: "/data/signing"   
+  key_dir: "/data/signing"
 
 federation_data:
-  entity_id: "http://localhost:7672"   # IA 
+  entity_id: "http://localhost:7672" # IA
   authority_hints:
-    - "http://localhost:7672" # TA... (nesse caso a própria IA)
+    - "http://localhost:7672" # TA... (local: a própria IA)
   federation_entity_metadata:
     display_name: "Minha IA Local"
     organization_name: "Minha Org"
@@ -19,8 +19,8 @@ storage:
   data_dir: "/data/storage"
 
 endpoints:
-  fetch:   { path: "/fetch" }
-  list:    { path: "/list" }
+  fetch: { path: "/fetch" }
+  list: { path: "/list" }
   resolve: { path: "/resolve" }
   trust_mark:
     path: "/trustmark"

@@ -3,7 +3,7 @@ services:
     image: oidfed/lighthouse:main
     restart: unless-stopped
     ports:
-      - "7672:7672"                             # << expõe a porta
+      - "7672:7672"                             
     volumes:
       - ./lighthouse/config.yaml:/config.yaml:ro
       - ./lighthouse/data:/data

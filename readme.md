@@ -1,5 +1,16 @@
 ## OIDF Pilot
 
+### Sobre o repositório 
+São estudos sobre a implementação [Lighthouse](https://go-oidfed.github.io/lighthouse/)
+
+- Ela pode atuar como Trust Anchor (TA), Autoridade Intermediária, Resolver de metadados e Emissor de Trust Marks (selos).
+
+- Publica sua Entity Configuration (quem você é, suas chaves públicas e endpoints).
+
+- Emite/consome Entity Statements (JWTs assinados que formam a cadeia de confiança).
+
+- Resolve metadados de entidades aplicando políticas (ex.: exigir certos claims, filtrar atributos).
+
 ### Referências
 - https://go-oidfed.github.io/lighthouse/deployment/caddy/
 - https://github.com/GEANT/edugain-oidf-pilot/tree/main
