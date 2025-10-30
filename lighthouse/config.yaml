@@ -1,0 +1,35 @@
+server:
+    port: 7672
+signing:
+    alg: ES256
+    key_dir: "/data/signing"
+federation_data:
+    entity_id: "https://lighthouse.example.com"
+    federation_entity_metadata:
+        display_name: "Example Federation TA"
+        organization_name: "Example Organization"
+    metadata_policy_file: "/data/metadata-policy.json"
+storage:
+    backend: badger
+    data_dir: "/data/storage"
+endpoints:
+    fetch:
+        path: "/fetch"
+    list:
+        path: "/list"
+    resolve:
+        path: "/resolve"
+    trust_mark:
+        path: "/trustmark"
+        trust_mark_specs:
+          - trust_mark_type: "https://tm.example.org"
+            lifetime: 3600
+            ref: "https://tm.example.org/ref"
+            logo_uri: "https://tm.example.org/logo"
+            checker:
+                type: trust_path
+                config:
+                    trust_anchors:
+                        - entity_id: "https://lighthouse.example.com"
+    trust_mark_list:
+        path: "/trustmark/list"

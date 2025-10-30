@@ -1,0 +1,18 @@
+services:
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+
+  lighthouse:
+    image: oidfed/lighthouse:main
+    restart: unless-stopped
+    volumes:
+      - ./lighthouse/config.yaml:/config.yaml:ro
+      - ./lighthouse/data:/data

@@ -1,0 +1,3 @@
+lighthouse.example.com {
+  reverse_proxy lighthouse:7672
+}
