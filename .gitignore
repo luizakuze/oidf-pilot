@@ -1,0 +1,16 @@
+# Lighthouse signing keys e JWKS
+lighthouse/data/signing/*.pem
+lighthouse/data/signing/keys.jwks
+
+# Storage/DB local do Lighthouse
+lighthouse/data/storage/
+lighthouse/data/storage/**
+
+# Arquivos específicos listados pelo git status
+lighthouse/data/storage/000001.vlog
+lighthouse/data/storage/000002.vlog
+lighthouse/data/storage/00002.mem
+lighthouse/data/storage/DISCARD
+lighthouse/data/storage/KEYREGISTRY
+lighthouse/data/storage/LOCK
+lighthouse/data/storage/MANIFEST
