@@ -1,19 +1,12 @@
-# Lighthouse signing keys e JWKS
-lighthouse/data/signing/*.pem
-lighthouse/data/signing/keys.jwks
+# --- Lighthouse OIDF lab (TA/IA) ---
 
-# Storage/DB local do Lighthouse
-lighthouse/data/storage/
-lighthouse/data/storage/**
-lighthouse/data/storage/000001.vlog
-lighthouse/data/storage/000002.vlog
-lighthouse/data/storage/00002.mem
-lighthouse/data/storage/DISCARD
-lighthouse/data/storage/KEYREGISTRY
-lighthouse/data/storage/LOCK
-lighthouse/data/storage/MANIFEST
+# Dados gerados do Badger (storage de metadados)
+oidf-lab/ta/data/storage/
+oidf-lab/ia/data/storage/
 
-leaf/data/ 
+# Chaves privadas e JWKS geradas pelo Lighthouse
+oidf-lab/ta/data/signing/
+oidf-lab/ia/data/signing/
 
-leaf/data/storage/
-leaf/data/storage/*
+oidf-lab/ta/data/metadata-policy.json
+oidf-lab/ia/data/metadata-policy.json
