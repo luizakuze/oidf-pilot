@@ -1,0 +1,47 @@
+server:
+  port: 7673
+
+logging:
+  level: debug
+
+signing:
+  alg: ES256
+  key_dir: "/data/signing"
+
+storage:
+  backend: badger
+  data_dir: "/data/storage"
+
+federation_data:
+  # Entity ID da IA – nome de serviço Docker
+  entity_id: "http://ia:7673"
+
+  # IA aponta quem é o TA dela
+  authority_hints:
+    - "http://ta:7672"
+
+  federation_entity_metadata:
+    display_name: "Local Federation IA"
+    organization_name: "My Test NREN"
+
+  metadata_policy_file: "/data/metadata-policy.json"
+
+endpoints:
+  fetch:
+    path: "/fetch"
+    statement_lifetime: 3600
+
+  list:
+    path: "/list"
+
+  resolve:
+    path: "/resolve"
+
+  enroll:
+    path: "/enroll"
+
+  trust_mark_status:
+    path: "/trustmark/status"
+
+  trust_mark_list:
+    path: "/trustmark/list"

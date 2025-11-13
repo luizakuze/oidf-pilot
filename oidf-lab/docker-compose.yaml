@@ -1,0 +1,20 @@
+services:
+  ta:
+    image: oidfed/lighthouse:main
+    container_name: oidf-ta
+    restart: unless-stopped
+    ports:
+      - "7672:7672"
+    volumes:
+      - ./ta/config.yaml:/config.yaml:ro
+      - ./ta/data:/data
+
+  ia:
+    image: oidfed/lighthouse:main
+    container_name: oidf-ia
+    restart: unless-stopped
+    ports:
+      - "7673:7673"
+    volumes:
+      - ./ia/config.yaml:/config.yaml:ro
+      - ./ia/data:/data
