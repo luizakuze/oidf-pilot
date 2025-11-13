@@ -8,6 +8,19 @@ O objetivo deste lab é emular os blocos centrais do piloto eduGAIN OpenID Feder
 - Uma **Intermediate Authority / Federation Entity (IA)** também rodando Lighthouse (`oidf-ia`, entity_id `http://ia:7673`)
 - Uma **trust chain** funcional entre TA -> IA, usando os endpoints `/enroll`, `/list` e `/resolve`.
 
+### Checklist
+
+Planejamento contendo o que já foi desenvolvido e o que ainda falta: 
+
+- [x] Um TA  
+- [x] Uma IA  
+- [ ] Um OP (OpenID Provider) 
+- [ ] Um RP (Relying Party / Client)   
+- [ ] Política de metadados (metadata policy)  
+- [ ] Trust marks para OP e RP (no mínimo 1)  
+- [ ] Documentação de como os OP/RP estão subordinados ao TA/IA
+
+
 ### 1. Estrutura de diretórios
 
 ```text
