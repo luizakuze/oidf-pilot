@@ -12,3 +12,8 @@ lighthouse/data/storage/DISCARD
 lighthouse/data/storage/KEYREGISTRY
 lighthouse/data/storage/LOCK
 lighthouse/data/storage/MANIFEST
+
+leaf/data/ 
+
+leaf/data/storage/
+leaf/data/storage/*

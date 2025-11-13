@@ -17,14 +17,14 @@ São estudos sobre a implementação [Lighthouse](https://go-oidfed.github.io/li
 
 ### Obtendo a Entity Configuration
 
-#### Comando
+#### Payload
 > Subir a composição antes
 ```bash
 curl -s http://localhost:7672/.well-known/openid-federation \
-| awk -F. '{print $2}' \    # pega só o payload
-| tr '_-' '/+' \            # converte base64url -> base64
-| base64 -d 2>/dev/null \   # decodifica
-| jq .                      # formata o JSON
+| awk -F. '{print $2}' \     
+| tr '_-' '/+' \            
+| base64 -d 2>/dev/null \   
+| jq .                      
 ```
 
 #### Saída

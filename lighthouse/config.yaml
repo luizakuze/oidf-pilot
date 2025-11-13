@@ -6,12 +6,12 @@ signing:
   key_dir: "/data/signing"
 
 federation_data:
-  entity_id: "http://localhost:7672" # IA
+  entity_id: "http://localhost:7672"
   authority_hints:
-    - "http://localhost:7672" # TA... (local: a própria IA)
+    - "http://localhost:7672"
   federation_entity_metadata:
-    display_name: "Minha IA Local"
-    organization_name: "Minha Org"
+    display_name: "Intermediate Entity"
+    organization_name: "Org Local"
   metadata_policy_file: "/data/metadata-policy.json"
 
 storage:
