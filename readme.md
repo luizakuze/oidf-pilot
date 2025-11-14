@@ -1,96 +1,90 @@
-## Instância do OpenID Federation (Lighthouse TA + IA)
+# Instância OpenID Federation (Lighthouse TA + IA + RP)
 
-Este repositório contém um pequeno laboratório de OpenID Federation baseado no [Lighthouse](https://go-oidfed.github.io/lighthouse/).
+Este repositório contém um composição OpenID Federation baseado em [**Lighthouse**](https://go-oidfed.github.io/lighthouse/) e [**whoami-rp**](https://github.com/go-oidfed/whoami-rp).
 
-O objetivo deste lab é emular os blocos centrais do piloto eduGAIN OpenID Federation:
+## Checklist  
 
-- Um **Trust Anchor (TA)** rodando Lighthouse (`oidf-ta`, entity_id `http://ta:7672`)
-- Uma **Intermediate Authority / Federation Entity (IA)** também rodando Lighthouse (`oidf-ia`, entity_id `http://ia:7673`)
-- Uma **trust chain** funcional entre TA -> IA, usando os endpoints `/enroll`, `/list` e `/resolve`.
-
-### Checklist
-
-Planejamento contendo o que já foi desenvolvido e o que ainda falta: 
-
-- [x] Um TA  
-- [x] Uma IA  
-- [ ] Um OP (OpenID Provider) 
-- [ ] Um RP (Relying Party / Client)   
-- [ ] Política de metadados (metadata policy)  
-- [ ] Trust marks para OP e RP (no mínimo 1)  
-- [ ] Documentação de como os OP/RP estão subordinados ao TA/IA
+| Item | Status |
+|------|--------|
+| Trust Anchor (TA) | ✅ |
+| Intermediate Authority (IA) | ✅ |
+| Relying Party (RP) | ✅ |
+| OpenID Provider (OP) | ❌    |
+| Metadata Policy | ❌ |
+| Trust Marks (OP/RP) | ❌ |
 
 
-### 1. Estrutura de diretórios
+## 1. Estrutura de Diretórios
 
-```text
+```bash
 oidf-lab/
   docker-compose.yaml
   ta/
     config.yaml
     data/
       metadata-policy.json
-      signing/   # ignorado pelo git
-      storage/   # ignorado pelo git
+      signing/ 
+      storage/   
   ia/
     config.yaml
     data/
       metadata-policy.json
-      signing/   # ignorado pelo git
-      storage/   # ignorado pelo git
+      signing/
+      storage/
+  rp/
+    config.yaml     # whoami-rp
+    data/          
 ```
 
-### 2. Como executar o lab
 
-A partir da raiz do repositório:
+## 2. Subindo a composição
 
 ```bash
 cd oidf-lab
 docker compose up -d
 ```
 
-Verifique se as duas instâncias do Lighthouse estão rodando:
+Ver logs do TA e IA:
 
 ```bash
 docker compose logs ta ia --tail=30
 ```
 
-Você deve ver o Fiber ouvindo nas portas `7672` (TA) e `7673` (IA).
+Você deve ver o Lighthouse ouvindo:
 
-### 3. Inspecionar as entity configurations
+- TA -> porta **7672**
+- IA -> porta **7673**
 
-**Trust Anchor (TA):**
+## 3. Inspecionar Entity Configurations
 
-```bash
-curl -s http://localhost:7672/.well-known/openid-federation \
-  | cut -d'.' -f2 | base64 -d 2>/dev/null; echo
-```
-
-**Intermediate Authority (IA):**
+### Trust Anchor (TA)
 
 ```bash
-curl -s http://localhost:7673/.well-known/openid-federation \
-  | cut -d'.' -f2 | base64 -d 2>/dev/null; echo
+curl -s http://localhost:7672/.well-known/openid-federation   | cut -d'.' -f2 | base64 -d 2>/dev/null | jq .
 ```
 
-Você deve ver:
+### Intermediate Authority (IA)
 
-- `iss` e `sub` iguais a `http://ta:7672` para o TA  
-- `iss` e `sub` iguais a `http://ia:7673` para a IA  
-- `authority_hints` na IA apontando para `http://ta:7672`
+```bash
+curl -s http://localhost:7673/.well-known/openid-federation   | cut -d'.' -f2 | base64 -d 2>/dev/null | jq .
+```
 
-### 4. Fazer o enrollment da IA na TA
+Você deverá ver:
+
+- TA → `iss = sub = http://ta:7672`
+- IA → `iss = sub = http://ia:7673`
+- IA contém `authority_hints: ["http://ta:7672"]`
+
+## 4. Enroll da IA no TA
 
 ```bash
 curl "http://localhost:7672/enroll?sub=http://ia:7673&entity_type=federation_entity"
 ```
 
-Esse comando faz o TA buscar e validar a entity configuration da IA e armazenar uma **entity statement** TA -> IA no storage dele.
-
-Listar as entidades conhecidas pelo TA:
+Listar entidades conhecidas pelo TA:
 
 ```bash
-curl "http://localhost:7672/list"
+curl http://localhost:7672/list
 ```
 
 Saída esperada:
@@ -99,13 +93,132 @@ Saída esperada:
 ["http://ia:7673"]
 ```
 
-### 5. Resolver a trust chain (TA -> IA)
+## 5. Resolver IA no TA (trust chain completa)
 
 ```bash
-curl "http://localhost:7672/resolve?sub=http://ia:7673&trust_anchor=http://ta:7672"
+curl -s "http://localhost:7672/resolve?sub=http://ia:7673&trust_anchor=http://ta:7672"   | cut -d'.' -f2 | base64 -d 2>/dev/null | jq .
 ```
 
-Esse comando retorna um `resolve-response+jwt` contendo:
+Saída: metadados finais + trust chain TA → IA.
 
-- Os metadados finais resolvidos para `http://ia:7673`; e  
-- A trust chain ancorada no TA (`http://ta:7672`).
+# 6. Adicionando o Relying Party (RP - whoami-rp)
+
+O `whoami-rp` foi construído localmente pois não existe imagem pública.
+
+### Build da imagem
+
+```bash
+cd whoami-rp-src
+docker build -t oidfed/whoami-rp .
+```
+
+### Subir junto com TA/IA
+
+```bash
+cd oidf-lab
+docker compose up -d
+```
+
+Ver logs:
+
+```bash
+docker compose logs rp --tail=50
+```
+
+Esperado:
+
+```
+Serving on :7680
+```
+
+
+## 7. Testar Entity Configuration do RP
+
+```bash
+curl -s http://localhost:7680/.well-known/openid-federation   | cut -d'.' -f2 | base64 -d 2>/dev/null | jq .
+```
+
+Isso deve retornar:
+
+- `iss = sub = http://rp:7680`
+- chave pública do RP
+- authority_hints -> IA
+
+
+## 8. Enroll do RP na IA
+
+```bash
+curl "http://localhost:7673/enroll?sub=http://rp:7680&entity_type=openid_relying_party"
+```
+
+Listar no IA:
+
+```bash
+curl "http://localhost:7673/list"
+```
+
+Deve incluir:
+
+```json
+["http://rp:7680"]
+```
+
+
+## 9. Resolver o RP no TA (cadeia TA -> IA -> RP)
+
+```bash
+curl -s "http://localhost:7672/resolve?sub=http://rp:7680&trust_anchor=http://ta:7672"   | cut -d'.' -f2 | base64 -d 2>/dev/null | jq .
+```
+
+Essa saída deve mostrar:
+
+### Metadados finais do RP:
+- application_type
+- client_name
+- redirect_uris
+- response_types
+- grant_types
+- jwks
+
+### Trust chain completa:
+```
+TA -> IA -> RP
+```
+
+
+# 10. Comandos de Validação do Fluxo (Resumo)
+
+### 1) Ver TA
+```bash
+curl -s http://localhost:7672/.well-known/openid-federation | cut -d'.' -f2 | base64 -d
+```
+
+### 2) Ver IA
+```bash
+curl -s http://localhost:7673/.well-known/openid-federation | cut -d'.' -f2 | base64 -d
+```
+
+### 3) Ver RP
+```bash
+curl -s http://localhost:7680/.well-known/openid-federation | cut -d'.' -f2 | base64 -d
+```
+
+### 4) Enroll IA -> TA  
+```bash
+curl "http://localhost:7672/enroll?sub=http://ia:7673&entity_type=federation_entity"
+```
+
+### 5) Enroll RP -> IA  
+```bash
+curl "http://localhost:7673/enroll?sub=http://rp:7680&entity_type=openid_relying_party"
+```
+
+### 6) Resolve IA
+```bash
+curl -s "http://localhost:7672/resolve?sub=http://ia:7673&trust_anchor=http://ta:7672"   | cut -d'.' -f2 | base64 -d | jq .
+```
+
+### 7) Resolve RP (fluxo completo)
+```bash
+curl -s "http://localhost:7672/resolve?sub=http://rp:7680&trust_anchor=http://ta:7672"   | cut -d'.' -f2 | base64 -d | jq .
+```

@@ -1,0 +1,26 @@
+server_addr: ":7680"
+
+# Entity ID do RP dentro da federação
+entity_id: "http://rp:7680"
+
+organisation_name: "My Test RP Org"
+
+# Quem é o(s) trust anchor(s) que esse RP confia
+trust_anchors:
+  - entity_id: "http://ta:7672"
+
+# Quem “aponta” para esse RP (a IA)
+authority_hints:
+  - "http://ia:7673"
+
+# Onde o whoami-rp guarda as chaves (volume /keys)
+key_storage: "/keys"
+
+# Flags opcionais, mas úteis
+filter_to_automatic_ops: false
+enable_debug_log: true
+use_resolve_endpoint: true
+use_entity_collection_endpoint: true
+
+# Opcional – pode deixar vazio se quiser
+trust_marks: []

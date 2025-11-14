@@ -10,3 +10,11 @@ oidf-lab/ia/data/signing/
 
 oidf-lab/ta/data/metadata-policy.json
 oidf-lab/ia/data/metadata-policy.json
+
+
+ta/data/signing/
+ta/data/storage/
+ia/data/signing/
+ia/data/storage/
+rp/data/signing/
+rp/data/storage/

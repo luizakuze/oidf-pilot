@@ -18,3 +18,17 @@ services:
     volumes:
       - ./ia/config.yaml:/config.yaml:ro
       - ./ia/data:/data
+
+  rp:
+    image: oidfed/whoami-rp
+    container_name: oidf-rp
+    hostname: rp
+    restart: unless-stopped
+    ports:
+      - "7680:7680"
+    volumes:
+      - ./rp/config.yaml:/config.yaml:ro
+      - rp-keys:/keys
+
+volumes:
+  rp-keys:
